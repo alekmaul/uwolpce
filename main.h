@@ -2,7 +2,6 @@
 #define _UWOL_MAIN_
 
 #include <huc.h>
-#include <st.h>
 
 #define BGVRAM			0x0000
 #define SPRVRAM			0x4000

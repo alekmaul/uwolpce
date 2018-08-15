@@ -387,7 +387,7 @@ void checkcoins(void) {
 
 			if(salida!=2) {
 				//sfxinit(SFXVGM, SNDEXIT, 1);  //
-				//play_sound(SNDEXIT);
+				play_snd(SNDEXIT);
 			}
 
       // Get everyone out of here!
@@ -609,17 +609,7 @@ void game(void) {
 								while (sp_attr_buf[((xcami-2)>>1)+14*(ycami-2)] != 0);
 								spr_set( 12+16 ); spr_pattern( SPRVRAM+shirt_lr); spr_ctrl( SIZE_MAS|FLIP_MAS , SZ_16x16|NO_FLIP );
 								spr_x(xcami<<3);spr_y(ycami<<3);spr_pal( 0 ); spr_pri( 1 );
-								//sp_TileGet(xcami,ycami);
-								//draw_tile (xcami, ycami, 84,0,0);
-/*
-								put_number(ofscami,3,4,6);
-								put_number(xcami,3,4,7);
-								put_number(ycami,3,4,8); // 18,8
-								put_number(fdcami[0],3,4,0);
-								put_number(fdcami[1],3,4,1);
-								put_number(fdcami[2],3,4,2);
-								put_number(fdcami[3],3,4,3);
-*/
+
 								xcami =  (xcami<<3);
 								ycami = (ycami<<3);
 							} 
@@ -700,8 +690,7 @@ void game(void) {
 			if(lives<99) lives ++;
 			vidaextra = 1;
 			player.ct_estado = 48;//32*3/2;
-			//sfxinit(SFXVGM, SNDHITGRD, 1); // 
-			//play_sound (SNDBONUS);
+			play_snd (SNDBONUS);
 			draw_lives(); 
 		}
 
@@ -727,46 +716,14 @@ void game(void) {
 			spr_x(moviles[idfant].x); 
 			spr_y(moviles[idfant].y); 
 		}
-
-		// if end of music , mute SN
-		//if (*pDone == 0) {
-		/*if ( pDone ) {
-			stmute();
-		}*/
 	}
 	
-	/*
-	wyz_stop_sound ();
-*/
-	fade_out ();
-/*	
-	todo_a_negro ();
+//	fade_out ();
+	fade_palette_out( BG_PAL0, 4, SPR_PAL0, 2 , 2 );
 
-	if (fantact) {
-		// Al carao fanti.
-		sp_MoveSprAbs (sp_moviles [idx], spritesClip, 0,0,0,0,0);
-		sp_DeleteSpr (sp_moviles [idx]);
-
-		// Creamos sprite normal:
-		sp_moviles [idx] = sp_CreateSpr(sp_MASK_SPRITE, 2, wolfi_1a, 2, TRANSPARENT);
-		sp_AddColSpr (sp_moviles [idx], wolfi_1b, TRANSPARENT);
-		sp_AddColSpr (sp_moviles [idx], wolfi_1c, TRANSPARENT);			
-
-		moviles [idx].current_frame = wolfi_1a;
-	}
-	
-	// Tenemos que sacar los sprites del viewport
-	
-	sp_MoveSprAbs (sp_prueba, spritesClip, 0,0,0,0,0);
-	if ( (player.estado & EST_EXIT) && fantact)
-		sp_MoveSprAbs (sp_moviles [idx], spritesClip, 0,0,0,0,0);
-*/
 	if ( flag1 == 0 || flag1 == 1 )
 		total_score += (100 + 5 * timee);
-/*	
-	for (i = 0; i < 3; i ++) 
-		sp_MoveSprAbs (sp_moviles [i], spritesClip, 0, 0,0,0,0);
-*/
+
 	for (i=0;i<(1+10+3+2+12+1); i++) {
 		spr_set(i);spr_hide();
 	}
@@ -775,9 +732,6 @@ void game(void) {
 	if (lives == 0xff) 
 		salida = 3;
 	
-	//stmute();
-	//mute_all();
-
 	fl=salida;
 }
 

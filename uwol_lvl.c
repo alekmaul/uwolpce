@@ -216,77 +216,6 @@ typedef struct {
 #define BASETILE 0x100
 
 //---------------------------------------------------------------------------------
-#define fade_out fade_palette_out( BG_PAL0, 4, SPR_PAL0, 2 , 1 )
-/*
-void fade_out () {
-	unsigned char r,g,b,j;
-	unsigned int i;
-
-	for (j=0;j<7;j++) {
-	  // BG
-		for (i=0;i<16*4;i++) {
-			b= get_color(i) & 7;
-    	r= (get_color(i)>>3) & 7;
-     	g= (get_color(i)>>6) & 7;
-   
-     	if (r) r--;
-     	if (g) g--;
-     	if (b) b--;
-      
-     	set_color_rgb(i, r, g, b);
-    }
-	  // Sprites
-		for (i=256;i<256+32;i++) {
-			b= get_color(i) & 7;
-			r= (get_color(i)>>3) & 7;
-      g= (get_color(i)>>6) & 7;
-   
-      if (r) r--;
-      if (g) g--;
-      if (b) b--;
-      
-      set_color_rgb(i, r, g, b);
-    }
-   	vsync(2);
-   }
-	disp_off();
-}
-*/
-
-/*
-void set_dark() {
-	unsigned char r,g,b;
-	unsigned int i;
-
-	// BG
-	for (i=0;i<16*4;i++) {
-		b= get_color(i) & 7;
-		r= (get_color(i)>>3) & 7;
-		g= (get_color(i)>>6) & 7;
- 
-		b >>=2;
-		r >>=2;
-		g >>=2;
-		
-		set_color_rgb(i, r, g, b);
-	}
-	// Sprites
-	for (i=256;i<256+16;i++) {
-		b= get_color(i) & 7;
-		r= (get_color(i)>>3) & 7;
-		g= (get_color(i)>>6) & 7;
- 
-		b >>=2;
-		r >>=2;
-		g >>=2;
-		
-		set_color_rgb(i, r, g, b);
-	}
-	vsync(2);
-}
-*/
-
-//---------------------------------------------------------------------------------
 void sp_TileSet(unsigned char col,unsigned char row,unsigned int tile) {
 	unsigned int tilep;
 	
@@ -480,9 +409,8 @@ void pyramid(void) {
 	spr_hide();
 	satb_update();
 
-	//allstop(); 
-	//mute_all();
-	fade_out();
+	play_snd(SNDJUMP);
+	fade_palette_out( BG_PAL0, 4, SPR_PAL0, 2 , 2 );
 }
 
 void draw_minitile(unsigned char x, unsigned char y, unsigned char tile,unsigned char attr) {

@@ -19,8 +19,8 @@ const unsigned char  effectok[MAXSOUNDS]={
 	4,	// exit
 	5,	// hit ground
 	6,	// bonus
-	0,	// hurt
-	0 	// dye
+	7,	// hurt
+	8 	// dye
 };
 
 // For squirrel engine
@@ -31,9 +31,9 @@ int  psgSubStatus;
 void init_snd() {
    //st_init();
 	// Phase d'init du timer et des voix pour jouer les samples */
-#if 0	
-	Init_USER_Timer_IRQ();								/* Init du TIMER */
-	Init_Voix_Sample();
+#if 1	
+	init_USER_Timer_IRQ();								/* Init du TIMER */
+	init_Voix_Sample();
 #else
 	// Init squirrel engine
 	psgInit(5);
@@ -52,18 +52,54 @@ void play_snd(unsigned char sndidx) {
 	// if sound ok
 	if (i !=0) {
 		if ((i & 0x80) == 0x00) { // Not a music, a sound effect
-/*
-                    #asm
-                    ldw_xy 	#_snd_jump
-                    lda		#00
-                    jsr		Joue_Sample
-                    #endasm
-*/
-			psgPlay(i);
+			if (i==2) {
+#asm
+				ldw_xy 	#_snd_jump
+				lda		#00
+				jsr		play_pcm
+#endasm
+			}
+			else if (i==3) {
+#asm
+				ldw_xy 	#_snd_takegold
+				lda		#00
+				jsr		play_pcm
+#endasm
+			}
+			else if (i==4) {
+#asm
+				ldw_xy 	#_snd_exit
+				lda		#00
+				jsr		play_pcm
+#endasm
+			}
+			else if (i==5) {
+#asm
+				ldw_xy 	#_snd_hitground
+				lda		#00
+				jsr		play_pcm
+#endasm
+			}
+			else if (i==6) {
+#asm
+				ldw_xy 	#_snd_bonus
+				lda		#00
+				jsr		play_pcm
+#endasm
+			}
+			else if (i==7) {
+#asm
+				ldw_xy 	#_snd_hurt
+				lda		#00
+				jsr		play_pcm
+#endasm
+			}
+			else if (i==8) {
+			}
     }
 		else { // yeah, it's a music
 			i = i & 0x1F; 
-			psgPlay(i);
+			//psgPlay(i);
 		}
 	}
 }

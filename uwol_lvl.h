@@ -3,7 +3,7 @@
 
 extern const unsigned char enem_frames[];
 
-extern void fade_out();
+//extern void fade_out();
 
 extern void draw_lives (void);
 extern void draw_score (void);

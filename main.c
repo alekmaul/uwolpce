@@ -1,17 +1,6 @@
 #include "main.h"
 #include "buildnum.h"
 
-/*
-#include "pcmsnds.h"
-
-#asm
-	.data
-    .bank   6
-    .org    $6000
-	.code
-#endasm
-*/
-
 #incbin(titletil,"gfxs/title.gfx");
 #incbin(titlemap,"gfxs/title.map");
 #incbin(titlepal,"gfxs/title.pal");
@@ -63,9 +52,7 @@
 #incbin(spritestil,"gfxs/sprites.gfx");
 #incbin(spritespal,"gfxs/sprites.pal");
 
-#if 0
 #include "pcmsnds.h"
-#endif
 
 // Squirrel MML engine
 #include "sound/psglib.c"
@@ -75,9 +62,7 @@
 #include "uwol_lvl.c"
 #include "uwol_fct.c"
 #include "uwol_snd.c"
-#if 0
 #include "pcm_dda.c"
-#endif
 
 
 const char scopy[]=
@@ -86,8 +71,6 @@ const char scopy[]=
 	BUILDID,
 	", coded by Jean-Michel Girard (Alekmaul), for Community."
 };
-
-//#incasm("titlescreen.asm")
 
 // main variables
 unsigned char fl;					// to determine which step in game
@@ -314,6 +297,7 @@ void uwol_showscreen(unsigned char num) {
 
 	//mute_all(); 
 	//psgOff(0);
+	psgAllStop();
 	if (num==1) {
 		for (i=0;i<8;i++) {
 			spr_set( i );
@@ -321,7 +305,8 @@ void uwol_showscreen(unsigned char num) {
 		}
 		satb_update();
 	}
-	fade_out ();
+	//fade_out ();
+	fade_palette_out( BG_PAL0, 4, SPR_PAL0, 2 , 2 );
 
 	// wait key released
 	while ( (tchpad & (sp_FIRE|sp_START)) != 0) { joyfunc(); vsync(1); }
@@ -406,7 +391,7 @@ void uwol_main (void) {
 //----------------------------------------------------------------------------------------
 void init_gfx() {
 	init_satb();
-	set_xres(256); // set_screen_size(SCR_SIZE_32x32);
+	set_xres(256); 
 }
 
 //---------------------------------------------------------------------------------
@@ -417,7 +402,7 @@ void uwol_preinit_variables(void) {
 
 //---------------------------------------------------------------------------------
 int main() {
-	// Init graphic mode
+	// Init sound engine
 	init_snd();
 
 	// Init graphic mode

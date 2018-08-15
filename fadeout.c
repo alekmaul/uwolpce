@@ -123,11 +123,11 @@ int		bg_pal_deb,
 		
 void fade_palette_out( unsigned int _bg_pal_deb, unsigned char _nb_bg_pals, unsigned int _spr_pal_deb, unsigned char _nb_spr_pals , unsigned char _speed )
 {	
-	/*bg_pal_deb = _bg_pal_deb;
-	spr_pal_deb = _spr_pal_deb;
+	bg_pal_deb = _bg_pal_deb;
 	nb_bg_pals = _nb_bg_pals;
+	spr_pal_deb = _spr_pal_deb;	
 	nb_spr_pals = _nb_spr_pals;
-	speed = _speed;*/
+	speed = _speed;
 	
 	#asm	 
 			lda 	#7
@@ -138,19 +138,21 @@ void fade_palette_out( unsigned int _bg_pal_deb, unsigned char _nb_bg_pals, unsi
 			and		#%0000_1111
 			sta		_nb_spr_pals		
 			
-			lda		LOW_BYTE _bg_pal_deb
+			lda		_bg_pal_deb			
 			sta		$402								; // Séléction de la palette dans le VCE
 			sta		<__ax			
 			
-			lda		HIGH_BYTE _bg_pal_deb
+			lda		_bg_pal_deb + 1
 			sta		$403								
-			sta		<__ax + 1	
-						
-			lda		_nb_bg_pals
-			sta		<__cl		
+			sta		<__ax + 1			
 			
 			lda		_speed
 			jsr		wait_vsync
+			
+		; // Si nb_bg_pals = 0 on passe à celles des sprites
+			lda		_nb_bg_pals
+			beq		.init_spr_fade_pals
+			sta		<__cl	
 	
 		.init_fade:						
 			clx
@@ -181,13 +183,13 @@ void fade_palette_out( unsigned int _bg_pal_deb, unsigned char _nb_bg_pals, unsi
 			tya			
 			and		#%1100_0000							; // Récupère la composante VERTE 1			
 			ror		A									; // Récupération du bit 9 dans REG A
-			beq		.end_fade
+			beq		.end_fade							
 			sec
 			sbc		#32			 		
-			asl		A									; // Remise du bit 9 dans la carry	
-			rol		_pals + 1 , X 						; // Récupération du bit 9 dans la palette provisoire
-		  
-		  .end_fade:									; // Dans REG A on a déjà la val de _g				 
+			asl		A									; // Remise du bit 9 dans la carry
+					
+		  .end_fade:									; // Dans REG A on a déjà la val de _g
+		  	rol		_pals + 1 , X 						; // Récupération du bit 9 dans la palette provisoire				 
 		; // On reforme la couleur avec les 3 vals RVB
 			ora 	<__bl												
 			ora 	<__bh
@@ -198,16 +200,16 @@ void fade_palette_out( unsigned int _bg_pal_deb, unsigned char _nb_bg_pals, unsi
 			
 		; // On teste si fin de palette X = 32
 			cpx		#32
-			lbne		.palette_fade
+			bne		.palette_fade						; // 85 cycles max par boucle .
 			
 		; // On met en place la palette courante
 			stw		<__ax , $402						; // Séléction de la palette dans le VCE
-			tia		_pals , $404 , 32					; // Copie palette courante dans le VCE
+			tia		_pals , $404 , 32					; // Copie la palette courante dans le VCE
 			
 			addw	#16 , <__ax
 			
 			dec		<__cl
-			lbne  		.init_fade
+			bne  		.init_fade
 			
 		   .init_spr_fade_pals:
 		; // Gestion du fade des palettes des sprites		
@@ -219,11 +221,11 @@ void fade_palette_out( unsigned int _bg_pal_deb, unsigned char _nb_bg_pals, unsi
 			ora		#128
 			sta		_nb_spr_pals	
 			
-			lda		LOW_BYTE _spr_pal_deb
+			lda		_spr_pal_deb
 			sta		$402								; // Séléction de la palette dans le VCE
 			sta		<__ax			
 			
-			lda		HIGH_BYTE _spr_pal_deb
+			lda		_spr_pal_deb + 1
 			sta		$403								
 			sta		<__ax + 1		
 			
@@ -231,8 +233,8 @@ void fade_palette_out( unsigned int _bg_pal_deb, unsigned char _nb_bg_pals, unsi
 			
 		   .pas_fade_spr_pals:			
 			dec 	_fin_fade
-			lbne  		.start_fade		
-	#endasm
+			lbne  		.start_fade			
+	#endasm	
 }
 
 void set_dark() {
