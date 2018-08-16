@@ -120,20 +120,7 @@ void init_Voix_Sample(void) {
 		cla		
 		clc
 		
-	  .init_global_balance:
-		adc		#17
-		pha
-		
-		clx
-		jsr		_vsync
-		
-		pla
-		
-		stz 	$806		
-		sta		$801
-		
-		cmp		#255		
-		bne		.init_global_balance
+		sty		$801
 				
 	; // Initialise les compteurs lecture samples						
 	; // Arrete la lecture d'un sample DDA
